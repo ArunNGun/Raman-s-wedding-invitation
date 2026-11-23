@@ -268,7 +268,7 @@ h2{font-family:var(--display);font-weight:500;color:var(--wine);font-size:clamp(
 .off, .off *{animation-play-state:paused!important}
 
 /* HERO */
-.hero{min-height:100vh;min-height:100svh;padding:calc(64px + env(safe-area-inset-top,0px)) 0 80px;display:grid;place-items:center}
+.hero{min-height:100vh;min-height:100svh;padding:calc(64px + env(safe-area-inset-top,0px)) 0 calc(112px + env(safe-area-inset-bottom,0px));display:grid;place-items:center}
 .shloka{font-family:"Tiro Devanagari Hindi","Kohinoor Devanagari","Noto Sans Devanagari",serif;color:var(--wine);font-size:13px;line-height:1.5}
 .shloka span{display:block;font-size:11.5px;color:var(--ink)}
 .host{font-size:11px;color:var(--ink);line-height:1.5;max-width:30ch;margin-top:4px}
@@ -302,7 +302,7 @@ h2{font-family:var(--display);font-weight:500;color:var(--wine);font-size:clamp(
 .contact{margin-top:24px;font-size:11.5px;color:var(--muted);line-height:1.6}
 .contact b{color:var(--ink);font-weight:600}
 .contact a{color:var(--wine);font-weight:600;text-decoration:none;user-select:all}
-.arch{position:absolute;left:50%;top:50%;width:min(86%,380px);height:min(84%,720px);transform:translate(-50%,-48%);
+.arch{position:absolute;left:50%;top:50%;width:calc(100% + 36px);height:max(calc(100% + 44px), min(82svh,720px));transform:translate(-50%,-50%);z-index:-1;
   border-radius:999px 999px 14px 14px;overflow:hidden;border:1.25px solid var(--gold);
   box-shadow:0 0 0 5px rgba(251,246,239,.6), 0 0 0 6px rgba(201,162,94,.55), 0 30px 60px -30px rgba(110,31,47,.35)}
 .arch img{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover}
@@ -321,9 +321,9 @@ h2{font-family:var(--display);font-weight:500;color:var(--wine);font-size:clamp(
 .invite-line{font-family:var(--display);font-style:italic;color:var(--ink);font-size:clamp(14px,2.3svh,17px);line-height:1.4;margin-top:clamp(4px,1svh,10px)}
 .hero .seq{opacity:0;transform:translate3d(0,8px,0)}
 .hero.play .seq{animation:letterIn .9s ease forwards}
-.scroll-cue{position:absolute;bottom:calc(3.5svh + env(safe-area-inset-bottom,0px));left:0;right:0;margin:0 auto;width:max-content;z-index:2;display:flex;flex-direction:column;align-items:center;gap:4px;
-  font-size:9px;letter-spacing:.32em;color:var(--wine);font-weight:600;text-decoration:none}
-.scroll-cue svg{width:18px;height:18px;animation:nudge 1.6s ease-in-out infinite}
+.scroll-cue{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:0;right:0;margin:0 auto;width:max-content;z-index:2;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:12px;letter-spacing:.3em;color:var(--wine);font-weight:600;text-decoration:none;padding-left:.3em}
+.scroll-cue svg{width:22px;height:22px;animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{50%{transform:translateY(5px)}}
 
 /* SAVE THE DATE */
@@ -496,7 +496,7 @@ h2.in + .h-orn path,h2.in + .h-orn circle{animation:draw 1.6s cubic-bezier(.6,.1
 .hero-rings i:nth-child(2){animation-delay:3s;border-style:dashed}
 .hero-rings i:nth-child(3){animation-delay:6s}
 @keyframes heroRing{0%{transform:scale(.45);opacity:0}15%{opacity:.9}100%{transform:scale(2.8);opacity:0}}
-.arch-line{position:absolute;left:50%;top:50%;width:min(86%,380px);height:min(84%,720px);transform:translate(-50%,-48%);overflow:visible;pointer-events:none;z-index:1;fill:none;stroke:var(--gold)}
+.arch-line{position:absolute;left:50%;top:50%;width:calc(100% + 36px);height:max(calc(100% + 44px), min(82svh,720px));transform:translate(-50%,-50%);overflow:visible;pointer-events:none;z-index:-1;fill:none;stroke:var(--gold)}
 .arch-line .o{stroke-width:1;opacity:.75}
 .arch-line .i{stroke-width:.8;opacity:.6}
 .arch-line{opacity:0;transition:opacity 2.2s ease .3s}
@@ -1561,6 +1561,7 @@ function majesty() {
   const hero = $("#hero"), arch = $(".arch");
   hero.insertAdjacentHTML("afterbegin", `<div class="hero-rings" aria-hidden="true"><i></i><i></i><i></i></div>`);
   hero.prepend(lowRes(renderMandala.canvas, 560, "hero-mandala"), lowRes(renderMandala.canvas, 420, "hero-mandala b"));
+  $(".hero-in", hero).prepend(arch);
   arch.insertAdjacentHTML("afterend", `<svg class="arch-line" aria-hidden="true"></svg>`);
   const line = $(".arch-line");
   const drawArch = () => { const w = arch.offsetWidth, h = arch.offsetHeight; if (!w) return;
@@ -1569,6 +1570,7 @@ function majesty() {
     line.setAttribute("viewBox", `0 0 ${w} ${h}`);
     line.innerHTML = `<path class="o" d="${p(-7)}" pathLength="1"/><path class="i" d="${p(9)}" pathLength="1"/>`; };
   drawArch(); addEventListener("resize", drawArch);
+  if (window.ResizeObserver) new ResizeObserver(drawArch).observe(arch);
 
   // 3. save the date: golden sun-rays behind the scroll once it is revealed
   $("#scrollWrap").prepend(renderRays());
